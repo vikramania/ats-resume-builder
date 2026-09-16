@@ -1,0 +1,191 @@
+<!--
+resume.json schema (all fields optional except name/contact — omit sections
+the candidate doesn't have rather than leaving them empty):
+
+{
+  "name": "Full Name",
+  "contact": {
+    "email": "you@example.com",
+    "phone": "+1 555 555 5555",
+    "linkedin": "linkedin.com/in/you",
+    "location": "City, Country"
+  },
+  "summary": "Optional 2-3 line professional summary paragraph.",
+  "experience": [
+    {
+      "company": "Company Name",
+      "role": "Job Title",
+      "start": "Jan 2021",
+      "end": "Present",
+      "clients": [
+        {
+          "name": "Client / Project Name",
+          "industry": "Retail",
+          "tech": "Snowflake, DBT, Airflow",
+          "bullets": ["Did X, resulting in **[X]% improvement**.", "..."]
+        }
+      ],
+      "bullets": ["Use this instead of clients[] when there's no client structure."]
+    }
+  ],
+  "education": [
+    {"institution": "University Name", "degree": "B.Tech, Computer Science", "start": "2015", "end": "2019"}
+  ],
+  "certifications": [
+    {"name": "Cert Name", "date": "Apr 2026"},
+    {"name": "Undated Cert Name"}
+  ],
+  "achievements": [
+    {"name": "Award Name", "year": "2023", "description": "What it was for."}
+  ],
+  "skills": [
+    {"category": "Programming Languages", "items": ["Python", "SQL"]},
+    {"category": "Cloud & Data Platforms", "items": ["Snowflake", "Databricks"]}
+  ]
+}
+
+Bold spans in bullet text: write **like this** — the renderer converts
+markdown-style **bold** to <strong> before Jinja escapes the rest.
+-->
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>{{ data.name }} — Resume</title>
+<style>
+  @page { size: A4; margin: 0.7in 0.75in; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 10.5pt;
+    line-height: 1.25;
+    color: #111;
+    margin: 0;
+  }
+  h1.name {
+    text-align: center;
+    font-size: 20pt;
+    font-weight: bold;
+    margin: 0 0 4pt;
+  }
+  .contact {
+    text-align: center;
+    font-size: 9.7pt;
+    margin: 0 0 14pt;
+  }
+  .contact span:not(:last-child)::after { content: " | "; }
+  .summary { margin: 0 0 12pt; text-align: justify; }
+  h2.section {
+    font-size: 11.5pt;
+    font-weight: bold;
+    text-transform: uppercase;
+    border-bottom: 1.2pt solid #111;
+    padding-bottom: 2pt;
+    margin: 14pt 0 6pt;
+    page-break-after: avoid;
+  }
+  .job { margin-bottom: 8pt; page-break-inside: avoid; }
+  .job-head {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    page-break-after: avoid;
+  }
+  .client-block { margin: 6pt 0 6pt 4pt; page-break-inside: avoid; }
+  .client-name { text-decoration: underline; font-weight: bold; }
+  .client-meta { font-style: italic; font-size: 10pt; margin: 1pt 0; }
+  ul.bullets { margin: 4pt 0 0; padding-left: 16pt; }
+  ul.bullets li { margin-bottom: 3pt; }
+  .crow { display: flex; justify-content: space-between; }
+  .edu-row { display: flex; justify-content: space-between; font-weight: bold; page-break-after: avoid; }
+  .edu-degree { font-weight: normal; margin: 1pt 0 6pt; }
+  .keep-together { page-break-inside: avoid; }
+  .skills-row { margin-bottom: 3pt; }
+  .skills-row .cat { font-weight: bold; }
+</style>
+</head>
+<body>
+
+<h1 class="name">{{ data.name }}</h1>
+<div class="contact">
+  {% if data.contact.email %}<span>&#9993; {{ data.contact.email }}</span>{% endif %}
+  {% if data.contact.phone %}<span>&#9742; {{ data.contact.phone }}</span>{% endif %}
+  {% if data.contact.linkedin %}<span>&#128279; {{ data.contact.linkedin }}</span>{% endif %}
+  {% if data.contact.location %}<span>&#128205; {{ data.contact.location }}</span>{% endif %}
+</div>
+
+{% if data.summary %}
+<p class="summary">{{ data.summary | bold }}</p>
+{% endif %}
+
+{% if data.experience %}
+<h2 class="section">Experience</h2>
+{% for job in data.experience %}
+<div class="job">
+  <div class="job-head">
+    <span>{{ job.role }} &middot; {{ job.company }}</span>
+    <span>{{ job.start }}&ndash;{{ job.end }}</span>
+  </div>
+  {% if job.bullets %}
+  <ul class="bullets">
+    {% for b in job.bullets %}<li>{{ b | bold }}</li>{% endfor %}
+  </ul>
+  {% endif %}
+  {% for c in job.clients or [] %}
+  <div class="client-block">
+    <div class="client-name">{{ c.name }}</div>
+    {% if c.industry %}<div class="client-meta">Industry: {{ c.industry }}</div>{% endif %}
+    {% if c.tech %}<div class="client-meta">Tech: {{ c.tech }}</div>{% endif %}
+    <ul class="bullets">
+      {% for b in c.bullets %}<li>{{ b | bold }}</li>{% endfor %}
+    </ul>
+  </div>
+  {% endfor %}
+</div>
+{% endfor %}
+{% endif %}
+
+{% if data.education %}
+<h2 class="section">Education</h2>
+{% for ed in data.education %}
+<div class="keep-together" style="margin-bottom:6pt;">
+  <div class="edu-row"><span>{{ ed.institution }}</span><span>{{ ed.start }}&ndash;{{ ed.end }}</span></div>
+  <div class="edu-degree">{{ ed.degree }}</div>
+</div>
+{% endfor %}
+{% endif %}
+
+{% if data.certifications or data.achievements %}
+<div class="keep-together">
+  {% if data.certifications %}
+  <h2 class="section">Certifications</h2>
+  <ul class="bullets">
+    {% for c in data.certifications %}
+    <li>
+      {% if c.date %}<div class="crow"><strong>{{ c.name }}</strong><span>{{ c.date }}</span></div>
+      {% else %}<strong>{{ c.name }}</strong>{% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+  {% if data.achievements %}
+  <h2 class="section">Achievements</h2>
+  <ul class="bullets">
+    {% for a in data.achievements %}
+    <li><strong>{{ a.name }}</strong> ({{ a.year }}): {{ a.description | bold }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</div>
+{% endif %}
+
+{% if data.skills %}
+<h2 class="section">Skills</h2>
+{% for group in data.skills %}
+<div class="skills-row"><span class="cat">{{ group.category }}:</span> {{ group['items'] | join(", ") }}</div>
+{% endfor %}
+{% endif %}
+
+</body>
+</html>

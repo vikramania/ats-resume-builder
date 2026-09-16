@@ -1,0 +1,42 @@
+{
+  "name": "Jordan Rivera",
+  "contact": {
+    "email": "jordan.rivera@example.com",
+    "phone": "+1 555 010 2020",
+    "linkedin": "linkedin.com/in/jordanrivera",
+    "location": "Austin, TX"
+  },
+  "summary": "Data engineer with 5 years building ETL/ELT pipelines and cloud data platforms across retail and logistics clients.",
+  "experience": [
+    {
+      "company": "Example Consulting",
+      "role": "Senior Data Engineer",
+      "start": "Jun 2021",
+      "end": "Present",
+      "clients": [
+        {
+          "name": "Northwind Retail",
+          "industry": "Retail",
+          "tech": "Snowflake, DBT, Airflow, Python",
+          "bullets": [
+            "Rebuilt the nightly sales-aggregation pipeline, cutting run time from 3 hours to **45 minutes**.",
+            "Migrated 12 legacy SSIS packages to DBT models, reducing pipeline maintenance tickets by **[X]%**."
+          ]
+        }
+      ]
+    }
+  ],
+  "education": [
+    {"institution": "University of Texas at Austin", "degree": "B.S. Computer Science", "start": "2015", "end": "2019"}
+  ],
+  "certifications": [
+    {"name": "Snowflake SnowPro Core", "date": "Mar 2024"},
+    {"name": "Databricks Certified Data Engineer Associate", "date": "Nov 2023"}
+  ],
+  "skills": [
+    {"category": "Programming Languages", "items": ["Python", "SQL"]},
+    {"category": "Transformation & Orchestration", "items": ["DBT", "Apache Airflow"]},
+    {"category": "Cloud & Data Platforms", "items": ["Snowflake", "AWS S3", "AWS Redshift"]},
+    {"category": "AI-assisted Development", "items": ["Claude Code", "GitHub Copilot"]}
+  ]
+}
