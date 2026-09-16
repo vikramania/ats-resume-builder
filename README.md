@@ -26,6 +26,40 @@ To extract text from a LinkedIn export or an existing resume PDF:
 python3 scripts/extract_pdf_text.py ~/Downloads/Profile.pdf
 ```
 
+## Use with Claude Code
+
+This repository contains a Claude Code skill. It works on macOS, Linux, and Windows with Claude Code, Git, Python 3, and Google Chrome installed.
+
+Clone the repository, install its dependencies, and start Claude Code from the repository root:
+
+```bash
+git clone https://github.com/YOUR_USERNAME/ats-resume-builder.git
+cd ats-resume-builder
+python3 -m pip install -r requirements.txt
+claude
+```
+
+On Windows, use `py` if `python3` is unavailable:
+
+```powershell
+py -m pip install -r requirements.txt
+claude
+```
+
+Claude Code discovers the skill at `.claude/skills/ats-resume-builder/SKILL.md` when started in this repository. You can also copy that folder to your Claude Code user-level skills directory if you want to use it from other projects.
+
+Example prompts:
+
+```text
+Review my resume at /path/to/resume.pdf and create a detailed ATS feedback report.
+```
+
+```text
+Build my ATS-friendly resume using my resume, LinkedIn export PDF, certificates, and this job description. Do not invent metrics.
+```
+
+Provide LinkedIn's exported **Save to PDF** file rather than a profile URL. The skill creates a Markdown draft or feedback report first, then renders the final PDF after the content is confirmed.
+
 ## How it's meant to be used
 
 Two entry points, both driven by the skill (see `SKILL.md` for the full workflow):
